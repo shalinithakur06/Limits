@@ -42,16 +42,19 @@ def getCardsToBeCombined(CHANNEL_ARRAY, IN_FILE_DIR_ARRAY, HIST_ARRAY, MASS):
     #make separate cards first
     for CH in range(len(CHANNEL_ARRAY)):
         for HIST in range(len(HIST_ARRAY)):
-            SIG_LABEL = "ExLep"+str(MASS)
+            SIG_LABEL = ""
+            #SIG_LABEL = "ExLep"+str(MASS)
             SIG_FILE = "all_ExLepMuMuZ_M"+str(MASS)+".root"
-            makeDataCards(IN_FILE_DIR_ARRAY[CH], HIST_ARRAY[HIST][0],HIST_ARRAY[HIST][1], CHANNEL_ARRAY[CH], MASS, SIG_LABEL, SIG_FILE)
+            #makeDataCards(IN_FILE_DIR_ARRAY[CH], HIST_ARRAY[HIST][0],HIST_ARRAY[HIST][1], CHANNEL_ARRAY[CH], MASS, SIG_LABEL, SIG_FILE)
+            makeDataCards(IN_FILE_DIR_ARRAY[CH], HIST_ARRAY[HIST][0],HIST_ARRAY[HIST][1]+str(MASS), CHANNEL_ARRAY[CH], MASS, SIG_LABEL, SIG_FILE)
     #store separate cards in an array
     COMB_CARD_CHANNEL_HIST_MASS = []
     for CH in range(len(CHANNEL_ARRAY)):
         COMB_CARD_HIST_MASS = []
         for HIST in range(len(HIST_ARRAY)):
             COMB_CARD_MASS = []
-            COMB_CARD_MASS.append('datacard_llstar_llZ_llq_13TeV_'+CHANNEL_ARRAY[CH]+'_'+HIST_ARRAY[HIST][0]+'_'+HIST_ARRAY[HIST][1]+'_ExLep'+str(MASS)+'.txt')
+            COMB_CARD_MASS.append('datacard_llstar_llZ_llq_13TeV_'+CHANNEL_ARRAY[CH]+'_'+HIST_ARRAY[HIST][0]+'_'+HIST_ARRAY[HIST][1]+str(MASS)+'.txt')
+            #COMB_CARD_MASS.append('datacard_llstar_llZ_llq_13TeV_'+CHANNEL_ARRAY[CH]+'_'+HIST_ARRAY[HIST][0]+'_'+HIST_ARRAY[HIST][1]+'_ExLep'+str(MASS)+'.txt')
             COMB_CARD_HIST_MASS.append(COMB_CARD_MASS)
         COMB_CARD_CHANNEL_HIST_MASS.append(COMB_CARD_HIST_MASS)    
     return COMB_CARD_CHANNEL_HIST_MASS
@@ -93,18 +96,6 @@ def calcCombinedLimit(CHANNEL_ARRAY, IN_FILE_DIR_ARRAY, HIST_ARRAY,  MASS_ARRAY,
 
 
 if __name__=="__main__":
-    #---------------------------------------------
-    #USERS INPUTS
-    #---------------------------------------------
-    path_file_dir="/home/sthakur/t3store2/xRavindra/CMSSW_8_1_0/src/HiggsAnalysis/LimitCompExLepton/for2016Data/Limits/"
-    muon_file_dir=path_file_dir+"stack_for2016Data_20190117_Mu_Sys"
-    ele_file_dir=path_file_dir+"stack_for2016Data_20190117_Ele_Sys"
-
-    hist_array = []
-    hist_array.append(["ZTag", "mlZ_max"])
-
-    #mass_array = [250, 500]
-    mass_array = [250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--ch", default="mu", help="The channel name e.g. mu or ele or mu_ele")
@@ -115,6 +106,18 @@ if __name__=="__main__":
     parser.add_argument("--isGOF", default=False, help="Want to determine the goodness-of-fit")
     args = parser.parse_args()
     
+    #---------------------------------------------
+    #USERS INPUTS
+    #---------------------------------------------
+    path_file_dir="/home/sthakur/t3store2/xRavindra/CMSSW_8_1_0/src/HiggsAnalysis/LimitCompExLepton/for2016Data/Limits/"
+    muon_file_dir=path_file_dir+"stack_for2016Data_20190117_Mu_Sys"
+    ele_file_dir=path_file_dir+"stack_for2016Data_20190117_Ele_Sys"
+
+    hist_array = []
+    hist_array.append(["ZTag", "mlZ_max_sig"])
+
+    #mass_array = [250, 500]
+    mass_array = [250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
     if(args.ch=="mu"):
         in_channel= ["mu"]
         in_file = [muon_file_dir]

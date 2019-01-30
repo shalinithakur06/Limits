@@ -79,8 +79,10 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
   //create output data card for 13 TeV
   string outDataCard = "datacard_llstar_llZ_llq_13TeV_ExLep.txt";
   string histName_str(histSubDir_+TString("_")+histName);
-  if(isMuChannel) outDataCard = "datacard_llstar_llZ_llq_13TeV_mu_"+histName_str+"_ExLep%d.txt"; 
-  else outDataCard = "datacard_llstar_llZ_llq_13TeV_ele_"+histName_str+"_ExLep%d.txt";
+  //if(isMuChannel) outDataCard = "datacard_llstar_llZ_llq_13TeV_mu_"+histName_str+"_ExLep%d.txt"; 
+  //else outDataCard = "datacard_llstar_llZ_llq_13TeV_ele_"+histName_str+"_ExLep%d.txt";
+  if(isMuChannel) outDataCard = "datacard_llstar_llZ_llq_13TeV_mu_"+histName_str+".txt"; 
+  else outDataCard = "datacard_llstar_llZ_llq_13TeV_ele_"+histName_str+".txt";
   ofstream out(Form(outDataCard.c_str(), mass));
   out.precision(8);
 

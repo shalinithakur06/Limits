@@ -28,7 +28,7 @@ void LimitPlotter(TString CHANNEL="mu",
   {
   gStyle->SetFrameLineWidth(3);
   TCanvas *c1 = new TCanvas();
-  //gPad->SetLogy();
+  gPad->SetLogy();
   c1->SetGrid(0,0);
   c1->SetFillStyle(4000);
   c1->SetFillColor(10);
@@ -56,9 +56,9 @@ void LimitPlotter(TString CHANNEL="mu",
   float expY2sL[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
   float expY2sH[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
 
-  int nMassPoints = 11;
+  int nMassPoints = 14;
   TString ch_hist = CHANNEL;
-  TString massFiles [11] = {
+  TString massFiles [14] = {
   "Mass250/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH250.root",
   "Mass500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH500.root",
   "Mass750/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH750.root",
@@ -69,10 +69,10 @@ void LimitPlotter(TString CHANNEL="mu",
   "Mass2000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH2000.root",
   "Mass2500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH2500.root",
   "Mass3000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH3000.root",
-  "Mass3500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH3500.root"}
-  //"Mass4000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4000.root",
-  //"Mass4500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4500.root",
-  //"Mass5000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH5000.root"};
+  "Mass3500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH3500.root",
+  "Mass4000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4000.root",
+  "Mass4500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4500.root",
+  "Mass5000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH5000.root"};
   
   double maxY = 1.0;
   for(unsigned int i = 0 ; i < nMassPoints; i++){
@@ -81,11 +81,30 @@ void LimitPlotter(TString CHANNEL="mu",
       cout << "Cannot open file for " << string(CHANNEL.Data()) << " and mass " << X[i] << endl;
       continue;
     }
+    double xss = 1.0;
+         if(massFiles[i].Contains("250"))  xss = 0.00427    ;
+    else if(massFiles[i].Contains("500"))  xss = 0.00291    ;
+    else if(massFiles[i].Contains("750"))  xss = 0.001761   ;
+    else if(massFiles[i].Contains("1000")) xss = 0.001177   ;
+    else if(massFiles[i].Contains("1250")) xss = 0.0007263  ;
+    else if(massFiles[i].Contains("1500")) xss = 0.0004267  ;
+    else if(massFiles[i].Contains("1750")) xss = 0.0002654  ;
+    else if(massFiles[i].Contains("2000")) xss = 0.00002021 ;
+    else if(massFiles[i].Contains("2500")) xss = 0.00006755 ;
+    else if(massFiles[i].Contains("3000")) xss = 0.00002223 ;
+    else if(massFiles[i].Contains("3500")) xss = 0.000008166;
+    else if(massFiles[i].Contains("4000")) xss = 0.000003209;
+    else if(massFiles[i].Contains("4500")) xss = 0.000001133;
+    else if(massFiles[i].Contains("5000")) xss = 0.000000452;
+
     Double_t r;
     TTree* limit = (TTree*)f.Get("limit");
     limit->SetBranchAddress("limit",&r);
+    
     for(int k = 0 ; k< limit->GetEntries() ; k++){
       limit->GetEntry(k);
+      //multiply by xss
+      r = r*xss;
       if(k==0) expY2sL[i] = r;
       if(k==1) expY1sL[i] = r;
       if(k==1) expY1sL_[i] = r;
@@ -95,7 +114,7 @@ void LimitPlotter(TString CHANNEL="mu",
       if(k==4) expY2sH[i] = r;
       if(k==5) obsY[i]    = r;
     }
-    if(massFiles[i].Contains("3500")) maxY = expY2sH[i];
+    if(massFiles[i].Contains("5000")) maxY = expY2sH[i];
   }
   cout<<std::setprecision(4)<<endl;
   cout<<"Mass:"<<setw(15)<<"base value"<<setw(15)<<"-2 #sigma"<<setw(15)<<"-1 #sigma"<<setw(15)<<"+1 #sigma"<<setw(15)<<"+2 #sigma"<<endl; 
@@ -110,8 +129,8 @@ void LimitPlotter(TString CHANNEL="mu",
   for(int i1 = 0 ; i1 < nMassPoints ; i1++){
     expY1sH_[i1] = 100*TMath::Abs(expY1sH_[i1]-expY[i1]);
     expY1sL_[i1] = 100*TMath::Abs(expY1sL_[i1]-expY[i1]);
-    cout<<"$"<<std::setprecision(2)<<100*expY[i1]<<"^{+"<<expY1sH_[i1]<<"}"<<"_"<<"{-"<< expY1sL_[i1]<<"}"<<"$"<<endl;
-    cout<<endl;
+    //cout<<"$"<<std::setprecision(2)<<100*expY[i1]<<"^{+"<<expY1sH_[i1]<<"}"<<"_"<<"{-"<< expY1sL_[i1]<<"}"<<"$"<<endl;
+    //cout<<endl;
   }
   
   TMultiGraph *mg = new TMultiGraph();
@@ -120,7 +139,7 @@ void LimitPlotter(TString CHANNEL="mu",
   if(CHANNEL=="mu") ch_name = "#mu";
   if(CHANNEL=="ele") ch_name = "e";
   if(CHANNEL=="mu_ele") ch_name = "lep";
-  mg->SetMaximum(1.02*maxY);
+  mg->SetMaximum(1.5*maxY);
 
   TGraphAsymmErrors* expected = new TGraphAsymmErrors(nMassPoints, X, expY, expX1sL ,expX1sL , expX1sL, expX1sL);
   TGraphAsymmErrors* oneSigma = new TGraphAsymmErrors(nMassPoints, X, expY, expX1sL, expX1sL,  expY1sL, expY1sH);
@@ -130,16 +149,16 @@ void LimitPlotter(TString CHANNEL="mu",
  
   //oneSigma->SetMarkerColor(kBlack);
   //oneSigma->SetMarkerStyle(kFullCircle);
-  oneSigma->SetFillColor(kGreen+1);
+  oneSigma->SetFillColor(kGreen);
   oneSigma->SetFillStyle(1001);
 
   //twoSigma->SetMarkerColor(kBlack);
   //twoSigma->SetMarkerStyle(kFullCircle);
-  twoSigma->SetFillColor(kYellow+1);
+  twoSigma->SetFillColor(kYellow);
   twoSigma->SetFillStyle(1001);
 
-  //expected->SetMarkerColor(kBlack);
-  //expected->SetMarkerStyle(kFullCircle);
+  expected->SetMarkerColor(kBlack);
+  expected->SetMarkerStyle(23);
   //expected->SetMarkerSize(0.0);
   expected->SetLineColor(kBlack);
   expected->SetLineWidth(2);
@@ -157,29 +176,31 @@ void LimitPlotter(TString CHANNEL="mu",
   if(obs) mg->Add(observed);
 
   gPad->Modified();
-  gPad->SetBottomMargin(0.22);
-  gPad->SetLeftMargin(0.18);
+  gPad->SetBottomMargin(0.12);
+  gPad->SetLeftMargin(0.15);
   //gPad->SetGridy();
   gPad->SetRightMargin(0.05);
   gStyle->SetFrameLineWidth(3);
-  mg->GetXaxis()->SetLimits(200,5100);
-  mg->GetYaxis()->SetTitleOffset(1.30);
+  mg->GetXaxis()->SetLimits(100,5200);
+  mg->GetYaxis()->SetTitleOffset(1.50);
   mg->GetYaxis()->SetNdivisions(6);
+  //mg->GetXaxis()->SetNdivisions(6);
   mg->GetXaxis()->SetTitleOffset(1.15);
-  mg->SetMinimum(0.01);
+  //mg->SetMinimum(1.0);
   //mg->SetMaximum(yMax);
-  mg->GetXaxis()->SetTitle("M_{H^{#pm}} (GeV)");
-  mg->GetYaxis()->SetTitle("95% CL limit for BR(t#rightarrow bH^{#pm})"); 
-  mg->GetYaxis()->SetTitleSize(0.07);   
-  mg->GetXaxis()->SetTitleSize(0.08);
-  mg->GetXaxis()->SetLabelSize(0.07);   
-  mg->GetYaxis()->SetLabelSize(0.07);   
-  //mg->GetXaxis()->SetTickLength(0.07);
+  mg->GetXaxis()->SetTitle("M_{#mu*} (GeV)");
+  mg->GetYaxis()->CenterTitle();
+  mg->GetYaxis()->SetTitle("95% CL limit for #sigma #times BR(#mu#mu*#rightarrow #mu#muZ #rightarrow 2#mu2q)");
+  mg->GetYaxis()->SetTitleSize(0.05);   
+  mg->GetXaxis()->SetTitleSize(0.05);
+  mg->GetXaxis()->SetLabelSize(0.05);   
+  mg->GetYaxis()->SetLabelSize(0.05);   
+  mg->GetXaxis()->SetTickLength(0.07);
   mg->GetYaxis()->SetTickLength(0.04);
 
   //leg->SetHeader(Form("#splitline{CMS Preliminary #sqrt{s}=13 TeV}{ LUMI fb^{-1}, %s}",CHANNEL.Data()));
 
-  leg->AddEntry(expected,"Expected","L");
+  leg->AddEntry(expected,"Expected","LP");
   if(obs) leg->AddEntry(observed,"Observed","LP");
   leg->AddEntry(oneSigma, "#pm 1 #sigma","F");
   leg->AddEntry(twoSigma, "#pm 2 #sigma","F");
@@ -196,11 +217,11 @@ void LimitPlotter(TString CHANNEL="mu",
   pl2->AddText("BR(H^{+} #rightarrow c#bar{s}) = 1");
  
   //pave text CMS box
-  TPaveText *pt = new TPaveText(0.20,0.9354,0.90,0.9362, "brNDC"); // good_v1
+  TPaveText *pt = new TPaveText(0.20,0.9354,0.50,0.9362, "brNDC"); // good_v1
   pt->SetBorderSize(1);
   pt->SetFillColor(19);
   pt->SetFillStyle(0);
-  pt->SetTextSize(0.08);
+  pt->SetTextSize(0.07);
   pt->SetLineColor(0);
   pt->SetTextFont(132);
   TText *text = pt->AddText("#sqrt{s}=13 TeV, 35.9 fb^{-1} ");
@@ -208,16 +229,16 @@ void LimitPlotter(TString CHANNEL="mu",
   text->SetTextAlign(11);
   
   //pave text channel box
-  TPaveText *ch = new TPaveText(1.00,0.9154898,0.7510067,0.9762187,"brNDC");
+  TPaveText *ch = new TPaveText(0.80,0.9154898,0.8510067,0.9762187,"brNDC");
   ch->SetFillColor(19);
   ch->SetFillStyle(0);
   ch->SetLineColor(0);
   ch->SetTextSize(0.08);
   ch->SetBorderSize(1);
-  if(CHANNEL=="mu")ch->AddText("#mu + jets");
-  if(CHANNEL=="ele") ch->AddText("e + jets");
-  if(CHANNEL=="mu_ele") ch->AddText("l + jets");
-  pl2->Draw("SAME");
+  if(CHANNEL=="mu")ch->AddText("#mu-channel");
+  if(CHANNEL=="ele") ch->AddText("e-channel");
+  if(CHANNEL=="mu_ele") ch->AddText("l-channel");
+  //pl2->Draw("SAME");
   pt->Draw("SAME");
   ch->Draw("SAME");
   leg->Draw("SAME");
@@ -243,7 +264,7 @@ void LimitPlotter(TString CHANNEL="mu",
 }
 
 void MyLimitPlotter(){
-  LimitPlotter("mu",  true, true );
+  LimitPlotter("mu",  false, true);
   //LimitPlotter("ele",  true, true );
   //LimitPlotter("mu_ele", true, true );
 }
