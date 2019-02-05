@@ -2,154 +2,119 @@
 #include <fstream>
 #include <iomanip>
 
-  //-------------------------------------------------//
-  //         Inclusive Mjj   
-  //-------------------------------------------------//
-  TString massFiles_mu_Cat1_Inc [8] = {
-  "mu/Cat1_Inc/Mass80/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH80.root",
-  "mu/Cat1_Inc/Mass90/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH90.root",
-  "mu/Cat1_Inc/Mass100/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH100.root",
-  "mu/Cat1_Inc/Mass120/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH120.root",
-  "mu/Cat1_Inc/Mass140/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH140.root",
-  "mu/Cat1_Inc/Mass150/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH150.root",
-  "mu/Cat1_Inc/Mass155/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH155.root",
-  "mu/Cat1_Inc/Mass160/higgsCombine_hcs_13TeV_mu_Cat1_Inc.AsymptoticLimits.mH160.root"};
+void makeLimitTable(TString CHANNEL,
+         bool obs, bool isOut, ofstream & outFile)
+  {
 
-  TString massFiles_ele_Cat1_Inc [8] = {
-  "ele/Cat1_Inc/Mass80/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH80.root",
-  "ele/Cat1_Inc/Mass90/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH90.root",
-  "ele/Cat1_Inc/Mass100/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH100.root",
-  "ele/Cat1_Inc/Mass120/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH120.root",
-  "ele/Cat1_Inc/Mass140/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH140.root",
-  "ele/Cat1_Inc/Mass150/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH150.root",
-  "ele/Cat1_Inc/Mass155/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH155.root",
-  "ele/Cat1_Inc/Mass160/higgsCombine_hcs_13TeV_ele_Cat1_Inc.AsymptoticLimits.mH160.root"};
+  float X[] = {250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000};
+  float obsY[]      = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY[]      = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+		                                              
+  float expX1sL[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expX1sH[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY1sL[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY1sH[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY1sL_[]  = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY1sH_[]  = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+                                                              
+		                                              
+  float expX2sL[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expX2sH[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY2sL[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
+  float expY2sH[]   = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
 
-  TString massFiles_mu_ele_Cat1_Inc [8] = {
-  "mu_ele/Cat1_Inc/Mass80/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH80.root",
-  "mu_ele/Cat1_Inc/Mass90/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH90.root",
-  "mu_ele/Cat1_Inc/Mass100/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH100.root",
-  "mu_ele/Cat1_Inc/Mass120/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH120.root",
-  "mu_ele/Cat1_Inc/Mass140/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH140.root",
-  "mu_ele/Cat1_Inc/Mass150/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH150.root",
-  "mu_ele/Cat1_Inc/Mass155/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH155.root",
-  "mu_ele/Cat1_Inc/Mass160/higgsCombine_hcs_13TeV_mu_ele_Cat1_Inc.AsymptoticLimits.mH160.root"};
-
-  TString massFiles_mu_Cat2_cTagInc [8] = {
-  "mu/Cat2_cTagInc/Mass80/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH80.root",
-  "mu/Cat2_cTagInc/Mass90/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH90.root",
-  "mu/Cat2_cTagInc/Mass100/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH100.root",
-  "mu/Cat2_cTagInc/Mass120/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH120.root",
-  "mu/Cat2_cTagInc/Mass140/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH140.root",
-  "mu/Cat2_cTagInc/Mass150/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH150.root",
-  "mu/Cat2_cTagInc/Mass155/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH155.root",
-  "mu/Cat2_cTagInc/Mass160/higgsCombine_hcs_13TeV_mu_Cat2_cTagInc.AsymptoticLimits.mH160.root"};
-
-  TString massFiles_ele_Cat2_cTagInc [8] = {
-  "ele/Cat2_cTagInc/Mass80/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH80.root",
-  "ele/Cat2_cTagInc/Mass90/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH90.root",
-  "ele/Cat2_cTagInc/Mass100/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH100.root",
-  "ele/Cat2_cTagInc/Mass120/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH120.root",
-  "ele/Cat2_cTagInc/Mass140/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH140.root",
-  "ele/Cat2_cTagInc/Mass150/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH150.root",
-  "ele/Cat2_cTagInc/Mass155/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH155.root",
-  "ele/Cat2_cTagInc/Mass160/higgsCombine_hcs_13TeV_ele_Cat2_cTagInc.AsymptoticLimits.mH160.root"};
-
-  TString massFiles_mu_ele_Cat2_cTagInc [8] = {
-  "mu_ele/Cat2_cTagInc/Mass80/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH80.root",
-  "mu_ele/Cat2_cTagInc/Mass90/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH90.root",
-  "mu_ele/Cat2_cTagInc/Mass100/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH100.root",
-  "mu_ele/Cat2_cTagInc/Mass120/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH120.root",
-  "mu_ele/Cat2_cTagInc/Mass140/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH140.root",
-  "mu_ele/Cat2_cTagInc/Mass150/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH150.root",
-  "mu_ele/Cat2_cTagInc/Mass155/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH155.root",
-  "mu_ele/Cat2_cTagInc/Mass160/higgsCombine_hcs_13TeV_mu_ele_Cat2_cTagInc.AsymptoticLimits.mH160.root"};
-
-
-  TString massFiles_mu_Cat3_cTagEx [8] = {
-  "mu/Cat3_cTagEx/Mass80/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH80.root",
-  "mu/Cat3_cTagEx/Mass90/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH90.root",
-  "mu/Cat3_cTagEx/Mass100/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH100.root",
-  "mu/Cat3_cTagEx/Mass120/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH120.root",
-  "mu/Cat3_cTagEx/Mass140/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH140.root",
-  "mu/Cat3_cTagEx/Mass150/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH150.root",
-  "mu/Cat3_cTagEx/Mass155/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH155.root",
-  "mu/Cat3_cTagEx/Mass160/higgsCombine_hcs_13TeV_mu_Cat3_cTagEx.AsymptoticLimits.mH160.root"};
-
-  TString massFiles_ele_Cat3_cTagEx [8] = {
-  "ele/Cat3_cTagEx/Mass80/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH80.root",
-  "ele/Cat3_cTagEx/Mass90/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH90.root",
-  "ele/Cat3_cTagEx/Mass100/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH100.root",
-  "ele/Cat3_cTagEx/Mass120/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH120.root",
-  "ele/Cat3_cTagEx/Mass140/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH140.root",
-  "ele/Cat3_cTagEx/Mass150/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH150.root",
-  "ele/Cat3_cTagEx/Mass155/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH155.root",
-  "ele/Cat3_cTagEx/Mass160/higgsCombine_hcs_13TeV_ele_Cat3_cTagEx.AsymptoticLimits.mH160.root"};
-
-  TString massFiles_mu_ele_Cat3_cTagEx [8] = {
-  "mu_ele/Cat3_cTagEx/Mass80/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH80.root",
-  "mu_ele/Cat3_cTagEx/Mass90/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH90.root",
-  "mu_ele/Cat3_cTagEx/Mass100/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH100.root",
-  "mu_ele/Cat3_cTagEx/Mass120/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH120.root",
-  "mu_ele/Cat3_cTagEx/Mass140/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH140.root",
-  "mu_ele/Cat3_cTagEx/Mass150/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH150.root",
-  "mu_ele/Cat3_cTagEx/Mass155/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH155.root",
-  "mu_ele/Cat3_cTagEx/Mass160/higgsCombine_hcs_13TeV_mu_ele_Cat3_cTagEx.AsymptoticLimits.mH160.root"};
-
-
-string getLimitNumbers(TString massFiles){
-    TFile f("limit/"+massFiles,"READ"); // higgsCombineChargedHiggs_mu.AsymptoticLimits.mH140.root
+  int nMassPoints = 14;
+  TString ch_hist = CHANNEL;
+  TString massFiles [14] = {
+  "Mass250/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH250.root",
+  "Mass500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH500.root",
+  "Mass750/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH750.root",
+  "Mass1000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH1000.root",
+  "Mass1250/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH1250.root",
+  "Mass1500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH1500.root",
+  "Mass1750/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH1750.root",
+  "Mass2000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH2000.root",
+  "Mass2500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH2500.root",
+  "Mass3000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH3000.root",
+  "Mass3500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH3500.root",
+  "Mass4000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4000.root",
+  "Mass4500/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH4500.root",
+  "Mass5000/higgsCombine_llstar_llZ_llq_13TeV_"+ch_hist+".AsymptoticLimits.mH5000.root"};
+  
+  double maxY = 1.0;
+  for(unsigned int i = 0 ; i < nMassPoints; i++){
+    TFile f("output/"+CHANNEL+"/"+massFiles[i],"READ"); 
     if(f.IsZombie()){
-      cout << "Cannot open file for " << massFiles << endl;
-      ///continue;
+      cout << "Cannot open file for " << string(CHANNEL.Data()) << " and mass " << X[i] << endl;
+      continue;
     }
-    float obsY     = 0.0;
-    float expY     = 0.0;
-    float expX1sL  = 0.0;
-    float expX1sH  = 0.0;
-    float expY1sL  = 0.0;
-    float expY1sH  = 0.0;
-    float expY1sL_  = 0.0;
-    float expY1sH_  = 0.0;
-   
-    float expX2sL  = 0.0;
-    float expX2sH  = 0.0;
-    float expY2sL  = 0.0;
-    float expY2sH  = 0.0;
+    double xss = 1.0;
+         if(massFiles[i].Contains("250"))  xss = 0.00427    ;
+    else if(massFiles[i].Contains("500"))  xss = 0.00291    ;
+    else if(massFiles[i].Contains("750"))  xss = 0.001761   ;
+    else if(massFiles[i].Contains("1000")) xss = 0.001177   ;
+    else if(massFiles[i].Contains("1250")) xss = 0.0007263  ;
+    else if(massFiles[i].Contains("1500")) xss = 0.0004267  ;
+    else if(massFiles[i].Contains("1750")) xss = 0.0002654  ;
+    else if(massFiles[i].Contains("2000")) xss = 0.00002021 ;
+    else if(massFiles[i].Contains("2500")) xss = 0.00006755 ;
+    else if(massFiles[i].Contains("3000")) xss = 0.00002223 ;
+    else if(massFiles[i].Contains("3500")) xss = 0.000008166;
+    else if(massFiles[i].Contains("4000")) xss = 0.000003209;
+    else if(massFiles[i].Contains("4500")) xss = 0.000001133;
+    else if(massFiles[i].Contains("5000")) xss = 0.000000452;
 
     Double_t r;
     TTree* limit = (TTree*)f.Get("limit");
     limit->SetBranchAddress("limit",&r);
+    
     for(int k = 0 ; k< limit->GetEntries() ; k++){
       limit->GetEntry(k);
-      if(k==0) expY2sL = r;
-      if(k==1) expY1sL = r;
-      if(k==1) expY1sL_ = r;
-      if(k==2) expY    = r;
-      if(k==3) expY1sH = r;
-      if(k==3) expY1sH_ = r;
-      if(k==4) expY2sH = r;
-      if(k==5) obsY    = r;
+      //multiply by xss
+      r = r*xss;
+      if(k==0) expY2sL[i] = r;
+      if(k==1) expY1sL[i] = r;
+      if(k==1) expY1sL_[i] = r;
+      if(k==2) expY[i]    = r;
+      if(k==3) expY1sH[i] = r;
+      if(k==3) expY1sH_[i] = r;
+      if(k==4) expY2sH[i] = r;
+      if(k==5) obsY[i]    = r;
     }
-    expY1sH = TMath::Abs(expY1sH-expY);
-    expY1sL = TMath::Abs(expY1sL-expY);
-    expY2sH = TMath::Abs(expY2sH-expY);
-    expY2sL = TMath::Abs(expY2sL-expY);
-    expY1sH_ = 100*TMath::Abs(expY1sH_-expY);
-    expY1sL_ = 100*TMath::Abs(expY1sL_-expY);
-    cout<<"$"<<100*expY<<"^{+"<<expY1sH_<<"}"<<"_"<<"{-"<< expY1sL_<<"}"<<endl;
-    cout<<setw(75)<<massFiles<<setw(5)<<" $"<<std::setprecision(2)<<100*expY<<"^{+"<<expY1sH_<<"}"<<"_"<<"{-"<< expY1sL_<<"}"<<"$"<<endl;
-    //convert float to string 
-    ostringstream convert;
-    string result("");
-    convert<<"$"<<std::setprecision(2)<<100*expY<<"^{+"<<expY1sH_<<"}"<<"_"<<"{-"<< expY1sL_<<"}"<<"$"<<"&"<<100*obsY<<endl;
-    result = convert.str(); 
-    return result;
+    if(massFiles[i].Contains("5000")) maxY = expY2sH[i];
+  }
+  cout<<std::setprecision(4)<<endl;
+  cout<<"Mass:"<<setw(15)<<"base value"<<setw(15)<<"-2 #sigma"<<setw(15)<<"-1 #sigma"<<setw(15)<<"+1 #sigma"<<setw(15)<<"+2 #sigma"<<endl; 
+
+  //make table
+  outFile<<"\\begin{table}"<<endl; 
+  outFile<<"\\begin{center}"<<endl; 
+  outFile<<"\\begin{tabular}{ |l|l|l|l|l|l|}"<<endl; 
+  outFile<<"\\hline "<<endl;
+  outFile<<"$M_{l^*}$"<<" & "<< "-2$\\sigma$ & -1$\\sigma$ & median & +1$\\sigma$ & +1$\\sigma$\\\\ "<<endl;
+  outFile<<"(GeV) & "<< "(\\%) & "<< "(\\%) & "<< "(\\%) & "<<"(\\%) & "<<"(\\%) "<<" \\\\ "<<endl;
+  outFile<<"\\hline "<<endl;
+  for(int i1 = 0 ; i1 < nMassPoints ; i1++){
+  cout<<X[i1]<<setw(15)<<expY[i1]<<setw(15)<<expY2sL[i1]<<setw(15)<< expY1sL[i1]<<setw(15)<<expY1sH[i1]<<setw(15)<<expY2sH[i1]<<endl; 
+  outFile<<X[i1]<<std::setprecision(3)<<" & "<<expY2sL[i1]<<" & "<< expY1sL[i1]<<" & "<<expY[i1]<<" & "<<expY1sH[i1]<<" & "<<expY2sH[i1]<<"\\\\"<<endl; 
+  }
+  outFile<<"\\hline "<<endl;
+  outFile<<"\\end{tabular}"<<endl; 
+  TString ch_name = "mu";
+  if(CHANNEL=="mu") ch_name = "muon";
+  if(CHANNEL=="ele") ch_name = "electron";
+  if(CHANNEL=="mu_ele") ch_name = "lepton";
+  outFile<<"\\caption{95\\% CL exclusion limit for "+ch_name+" channel.}"<<endl; 
+  outFile<<"\\label{tab:limit_"+ch_name+"}"<<endl;
+  outFile<<"\\end{center}"<<endl; 
+  outFile<<"\\end{table}"<<endl; 
+  outFile<<endl;
+  
 }
 
-void MyMakeLimitTable(){  
+void MyMakeLimitTable(){
   ofstream outFile; 
-  outFile.open("limit/limitTable.tex"); 
+  outFile.open("output/limitTable.tex"); 
   //outFile<<"\\documentclass[landscape,letterpaper]{article}"<<endl;  
   outFile<<"\\documentclass[]{article}"<<endl;  
   outFile<<"\\pagestyle{empty}"<<endl;  
@@ -160,161 +125,13 @@ void MyMakeLimitTable(){
   outFile<<"\\usepackage[cm]{fullpage}"<<endl;  
   outFile<<"\\begin{document}"<<endl;  
   outFile<<""<<endl;
-   
-  cout<<"=============================="<<endl;
-  cout<<"        MUON CHANNEL        "<<endl;
-  cout<<"=============================="<<endl;
-  outFile<<"\\begin{table}"<<endl; 
-  outFile<<"\\begin{center}"<<endl; 
-  outFile<<"\\begin{tabular}{ |c|c|c|c|c|c|c|}"<<endl; 
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\multicolumn{1}{|c}{} & \\multicolumn{2}{|c}{$M_{jj}(Inc)$} & \\multicolumn{2}{|c}{$M_{jj}(Inc ~CTagL)$} & \\multicolumn{2}{|c}{$M_{jj}(Ex ~CTag)$} \\\\"<<endl; 
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<<"{\\bf{$M_{H^\\pm}$}}"<<" & "<< "Expected & Observed & Expected & Observed & Expected & Observed "<< " \\\\ "<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<< " "<<" (GeV) & "<< "(\\%) & "<< "(\\%) & "<< "(\\%) & "<<"(\\%) & "<<"(\\%) & "<<"(\\%) "<<" \\\\ "<<endl;
-  outFile<<"[0.1cm] \\hline "<<endl;
-  cout<<endl; cout<<"                                    Mass: 80 GeV        "<<endl;
-  outFile<< "80  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[0])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[0])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[0])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 90 GeV        "<<endl;
-  outFile<< "90  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[1])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[1])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[1])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 100 GeV        "<<endl;
-  outFile<< "100  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[2])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[2])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[2])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 120 GeV        "<<endl;
-  outFile<< "120  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[3])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[3])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[3])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 140 GeV        "<<endl;
-  outFile<< "140  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[4])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[4])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[4])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 150 GeV        "<<endl;
-  outFile<< "150  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[5])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[5])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[5])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 155 GeV        "<<endl;
-  outFile<< "155  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[6])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[6])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[6])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 160 GeV        "<<endl;
-  outFile<< "160  & "<<getLimitNumbers(massFiles_mu_Cat1_Inc[7])<<" & "<<getLimitNumbers(massFiles_mu_Cat2_cTagInc[7])<<" & "<<getLimitNumbers(massFiles_mu_Cat3_cTagEx[7])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\end{tabular}"<<endl; 
-  outFile<<"\\caption{95\\% CL exclusion limit for muon + jets channel.}"<<endl; 
-  outFile<<"\\label{tab:limitMu}"<<endl;
-  outFile<<"\\end{center}"<<endl; 
-  outFile<<"\\end{table}"<<endl; 
-  outFile<<endl;
-
-  cout<<"=============================="<<endl;
-  cout<<"        ELECTRON CHANNEL        "<<endl;
-  cout<<"=============================="<<endl;
-  outFile<<"\\begin{table}"<<endl; 
-  outFile<<"\\begin{center}"<<endl; 
-  outFile<<"\\begin{tabular}{ |c|c|c|c|c|c|c|}"<<endl; 
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\multicolumn{1}{|c}{} & \\multicolumn{2}{|c}{$M_{jj}(Inc)$} & \\multicolumn{2}{|c}{$M_{jj}(Inc ~CTagL)$} & \\multicolumn{2}{|c}{$M_{jj}(Ex ~CTag)$} \\\\"<<endl; 
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<< "{\\bf{$M_{H^\\pm}$}}"<<" & "<< "Expected & Observed & Expected & Observed & Expected & Observed "<< " \\\\ "<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<< " "<<" (GeV) & "<< "(\\%) & "<< "(\\%) & "<< "(\\%) & "<<"(\\%) & "<<"(\\%) & "<<"(\\%)"<<" \\\\ "<<endl;
-  outFile<<"[0.1cm] \\hline "<<endl;
-  cout<<endl; cout<<"                                    Mass: 80 GeV        "<<endl;
-  outFile<< "80  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[0])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[0])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[0])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 90 GeV        "<<endl;
-  outFile<< "90  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[1])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[1])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[1])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 100 GeV        "<<endl;
-  outFile<< "100  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[2])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[2])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[2])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 120 GeV        "<<endl;
-  outFile<< "120  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[3])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[3])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[3])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 140 GeV        "<<endl;
-  outFile<< "140  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[4])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[4])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[4])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 150 GeV        "<<endl;
-  outFile<< "150  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[5])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[5])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[5])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 155 GeV        "<<endl;
-  outFile<< "155  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[6])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[6])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[6])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 160 GeV        "<<endl;
-  outFile<< "160  & "<<getLimitNumbers(massFiles_ele_Cat1_Inc[7])<<" & "<<getLimitNumbers(massFiles_ele_Cat2_cTagInc[7])<<" & "<<getLimitNumbers(massFiles_ele_Cat3_cTagEx[7])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\end{tabular}"<<endl; 
-  outFile<<"\\caption{95\\% CL exclusion limit for electron + jets channel.}"<<endl; 
-  outFile<<"\\label{tab:limitEle}"<<endl;
-  outFile<<"\\end{center}"<<endl; 
-  outFile<<"\\end{table}"<<endl; 
-  outFile<<endl;
-
-  cout<<"=============================="<<endl;
-  cout<<"        LEPTON CHANNEL        "<<endl;
-  cout<<"=============================="<<endl;
-  outFile<<"\\begin{table}"<<endl; 
-  outFile<<"\\begin{center}"<<endl; 
-  outFile<<"\\begin{tabular}{ |c|c|c|c|c|c|c|}"<<endl; 
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\multicolumn{1}{|c}{} & \\multicolumn{2}{|c}{$M_{jj}(Inc)$} & \\multicolumn{2}{|c}{$M_{jj}(Inc ~CTagL)$} & \\multicolumn{2}{|c}{$M_{jj}(Ex ~CTag)$} \\\\"<<endl; 
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<< "{\\bf{$M_{H^\\pm}$}}"<<" & "<< "Expected & Observed & Expected & Observed & Expected & Observed "<< " \\\\ "<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<< " "<<" (GeV) & "<< "(\\%) & "<< "(\\%) & "<< "(\\%) & "<<"(\\%) & "<<"(\\%) & "<<"(\\%) "<<" \\\\ "<<endl;
-  outFile<<"[0.1cm] \\hline "<<endl;
-  cout<<endl; cout<<"                                    Mass: 80 GeV        "<<endl;
-  outFile<< "80  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[0])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[0])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[0])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 90 GeV        "<<endl;
-  outFile<< "90  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[1])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[1])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[1])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 100 GeV        "<<endl;
-  outFile<< "100  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[2])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[2])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[2])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 120 GeV        "<<endl;
-  outFile<< "120  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[3])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[3])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[3])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 140 GeV        "<<endl;
-  outFile<< "140  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[4])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[4])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[4])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 150 GeV        "<<endl;
-  outFile<< "150  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[5])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[5])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[5])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 155 GeV        "<<endl;
-  outFile<< "155  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[6])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[6])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[6])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-
-  cout<<endl; cout<<"                                    Mass: 160 GeV        "<<endl;
-  outFile<< "160  & "<<getLimitNumbers(massFiles_mu_ele_Cat1_Inc[7])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat2_cTagInc[7])<<" & "<<getLimitNumbers(massFiles_mu_ele_Cat3_cTagEx[7])<< "\\\\"<<endl;
-  outFile<<"[0.1cm]  "<<endl;
-  outFile<<"\\hline "<<endl;
-  outFile<<"\\end{tabular}"<<endl; 
-  outFile<<"\\caption{95\\% CL exclusion limit for lepton + jets channel.}"<<endl; 
-  outFile<<"\\label{tab:limitLep}"<<endl;
-  outFile<<"\\end{center}"<<endl; 
-  outFile<<"\\end{table}"<<endl; 
+  //muon 
+  makeLimitTable("mu",  false, true, outFile);
+  //electron 
+  makeLimitTable("ele", false, true, outFile);
+  //lepton 
+  //makeLimitTable("mu_ele", false, true, outFile);
   outFile<<"\\end{document}"<<endl;  
   outFile.close(); 
-} 
+}
+

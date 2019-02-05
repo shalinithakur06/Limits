@@ -26,7 +26,7 @@ using namespace std;
 void LimitPlotter(TString CHANNEL="mu",
          bool obs= false, bool isOut= true )
   {
-  gStyle->SetFrameLineWidth(3);
+  gStyle->SetFrameLineWidth(2);
   TCanvas *c1 = new TCanvas();
   gPad->SetLogy();
   c1->SetGrid(0,0);
@@ -34,10 +34,6 @@ void LimitPlotter(TString CHANNEL="mu",
   c1->SetFillColor(10);
   c1->SetTicky();
   c1->SetObjectStat(0);
-  TLegend* leg = new TLegend(0.34,0.67,0.50,0.87,NULL,"brNDC");
-  leg->SetBorderSize(0);
-  leg->SetTextSize(0.05);
-  leg->SetFillColor(0);
 
   float X[] = {250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000};
   float obsY[]      = {0, 0, 0,0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0};
@@ -81,30 +77,29 @@ void LimitPlotter(TString CHANNEL="mu",
       cout << "Cannot open file for " << string(CHANNEL.Data()) << " and mass " << X[i] << endl;
       continue;
     }
-    double xss = 1.0;
-         if(massFiles[i].Contains("250"))  xss = 0.00427    ;
-    else if(massFiles[i].Contains("500"))  xss = 0.00291    ;
-    else if(massFiles[i].Contains("750"))  xss = 0.001761   ;
-    else if(massFiles[i].Contains("1000")) xss = 0.001177   ;
-    else if(massFiles[i].Contains("1250")) xss = 0.0007263  ;
-    else if(massFiles[i].Contains("1500")) xss = 0.0004267  ;
-    else if(massFiles[i].Contains("1750")) xss = 0.0002654  ;
-    else if(massFiles[i].Contains("2000")) xss = 0.00002021 ;
-    else if(massFiles[i].Contains("2500")) xss = 0.00006755 ;
-    else if(massFiles[i].Contains("3000")) xss = 0.00002223 ;
-    else if(massFiles[i].Contains("3500")) xss = 0.000008166;
-    else if(massFiles[i].Contains("4000")) xss = 0.000003209;
-    else if(massFiles[i].Contains("4500")) xss = 0.000001133;
-    else if(massFiles[i].Contains("5000")) xss = 0.000000452;
+    vector<double>sigXss;
+    sigXss.push_back(0.00427)    ;
+    sigXss.push_back(0.00291)    ;
+    sigXss.push_back(0.001761)   ;
+    sigXss.push_back(0.001177)   ;
+    sigXss.push_back(0.0007263)  ;
+    sigXss.push_back(0.0004267)  ;
+    sigXss.push_back(0.0002654)  ;
+    sigXss.push_back(0.0002021)  ;
+    sigXss.push_back(0.00006755) ;
+    sigXss.push_back(0.00002223) ;
+    sigXss.push_back(0.000008166);
+    sigXss.push_back(0.000003209);
+    sigXss.push_back(0.000001133);
+    sigXss.push_back(0.000000452);
 
     Double_t r;
     TTree* limit = (TTree*)f.Get("limit");
     limit->SetBranchAddress("limit",&r);
-    
     for(int k = 0 ; k< limit->GetEntries() ; k++){
       limit->GetEntry(k);
       //multiply by xss
-      r = r*xss;
+      r = r*sigXss[i];
       if(k==0) expY2sL[i] = r;
       if(k==1) expY1sL[i] = r;
       if(k==1) expY1sL_[i] = r;
@@ -114,7 +109,7 @@ void LimitPlotter(TString CHANNEL="mu",
       if(k==4) expY2sH[i] = r;
       if(k==5) obsY[i]    = r;
     }
-    if(massFiles[i].Contains("5000")) maxY = expY2sH[i];
+    maxY = expY2sH[0];
   }
   cout<<std::setprecision(4)<<endl;
   cout<<"Mass:"<<setw(15)<<"base value"<<setw(15)<<"-2 #sigma"<<setw(15)<<"-1 #sigma"<<setw(15)<<"+1 #sigma"<<setw(15)<<"+2 #sigma"<<endl; 
@@ -149,12 +144,12 @@ void LimitPlotter(TString CHANNEL="mu",
  
   //oneSigma->SetMarkerColor(kBlack);
   //oneSigma->SetMarkerStyle(kFullCircle);
-  oneSigma->SetFillColor(kGreen);
+  oneSigma->SetFillColor(kGreen+1);
   oneSigma->SetFillStyle(1001);
 
   //twoSigma->SetMarkerColor(kBlack);
   //twoSigma->SetMarkerStyle(kFullCircle);
-  twoSigma->SetFillColor(kYellow);
+  twoSigma->SetFillColor(kOrange);
   twoSigma->SetFillStyle(1001);
 
   expected->SetMarkerColor(kBlack);
@@ -178,32 +173,49 @@ void LimitPlotter(TString CHANNEL="mu",
   gPad->Modified();
   gPad->SetBottomMargin(0.12);
   gPad->SetLeftMargin(0.15);
-  //gPad->SetGridy();
+  gPad->SetGridy();
+  gPad->SetGridx();
   gPad->SetRightMargin(0.05);
   gStyle->SetFrameLineWidth(3);
-  mg->GetXaxis()->SetLimits(100,5200);
-  mg->GetYaxis()->SetTitleOffset(1.50);
-  mg->GetYaxis()->SetNdivisions(6);
-  //mg->GetXaxis()->SetNdivisions(6);
-  mg->GetXaxis()->SetTitleOffset(1.15);
   //mg->SetMinimum(1.0);
   //mg->SetMaximum(yMax);
-  mg->GetXaxis()->SetTitle("M_{#mu*} (GeV)");
-  mg->GetYaxis()->CenterTitle();
-  mg->GetYaxis()->SetTitle("95% CL limit for #sigma #times BR(#mu#mu*#rightarrow #mu#muZ #rightarrow 2#mu2q)");
-  mg->GetYaxis()->SetTitleSize(0.05);   
+  TString fullProcess = "";
+  if(CHANNEL=="mu"){
+    mg->GetXaxis()->SetTitle("M_{#mu*} (GeV)");
+    fullProcess = "#mu#mu*#rightarrow #mu#muZ #rightarrow 2#mu2q";   
+  }
+  if(CHANNEL=="ele"){
+    mg->GetXaxis()->SetTitle("M_{e*} (GeV)");
+    fullProcess = "ee*#rightarrow eeZ #rightarrow 2e2q";   
+  }
+  if(CHANNEL=="mu_ele"){
+    mg->GetXaxis()->SetTitle("M_{l*} (GeV)");
+    fullProcess = "ll*#rightarrow llZ #rightarrow 2l2q";   
+  }
+  
+  //mg->GetYaxis()->CenterTitle();
+  mg->GetXaxis()->SetLimits(1,5500);
+  mg->GetYaxis()->SetTitleOffset(1.20);
+  mg->GetYaxis()->SetNdivisions(6);
+  mg->GetXaxis()->SetNdivisions(11);
+  mg->GetXaxis()->SetTitleOffset(1.15);
+  mg->GetYaxis()->SetTitle("#sigma #times BR("+fullProcess+")");
+  mg->GetYaxis()->SetTitleSize(0.06);   
   mg->GetXaxis()->SetTitleSize(0.05);
-  mg->GetXaxis()->SetLabelSize(0.05);   
+  mg->GetXaxis()->SetLabelSize(0.04);   
   mg->GetYaxis()->SetLabelSize(0.05);   
-  mg->GetXaxis()->SetTickLength(0.07);
+  mg->GetXaxis()->SetTickLength(0.04);
   mg->GetYaxis()->SetTickLength(0.04);
 
-  //leg->SetHeader(Form("#splitline{CMS Preliminary #sqrt{s}=13 TeV}{ LUMI fb^{-1}, %s}",CHANNEL.Data()));
-
-  leg->AddEntry(expected,"Expected","LP");
+  TLegend* leg = new TLegend(0.55,0.60,0.75,0.87,NULL,"brNDC");
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.05);
+  leg->SetFillColor(0);
+  leg->SetHeader("95% CL upper limits");
+  leg->AddEntry(expected,"Median expected","LP");
   if(obs) leg->AddEntry(observed,"Observed","LP");
-  leg->AddEntry(oneSigma, "#pm 1 #sigma","F");
-  leg->AddEntry(twoSigma, "#pm 2 #sigma","F");
+  leg->AddEntry(oneSigma, "68% expected","F");
+  leg->AddEntry(twoSigma, "95% expected","F");
   leg->Draw();
 
  TPaveText *pl2 = new TPaveText(0.64,0.67,0.75,0.87, "brNDC");
@@ -221,7 +233,7 @@ void LimitPlotter(TString CHANNEL="mu",
   pt->SetBorderSize(1);
   pt->SetFillColor(19);
   pt->SetFillStyle(0);
-  pt->SetTextSize(0.07);
+  pt->SetTextSize(0.06);
   pt->SetLineColor(0);
   pt->SetTextFont(132);
   TText *text = pt->AddText("#sqrt{s}=13 TeV, 35.9 fb^{-1} ");
@@ -265,6 +277,6 @@ void LimitPlotter(TString CHANNEL="mu",
 
 void MyLimitPlotter(){
   LimitPlotter("mu",  false, true);
-  //LimitPlotter("ele",  true, true );
-  //LimitPlotter("mu_ele", true, true );
+  //LimitPlotter("ele", false, true );
+  //LimitPlotter("mu_ele", false, true );
 }

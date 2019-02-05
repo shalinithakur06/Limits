@@ -44,7 +44,7 @@ def getCardsToBeCombined(CHANNEL_ARRAY, IN_FILE_DIR_ARRAY, HIST_ARRAY, MASS):
         for HIST in range(len(HIST_ARRAY)):
             SIG_LABEL = ""
             #SIG_LABEL = "ExLep"+str(MASS)
-            SIG_FILE = "all_ExLepMuMuZ_M"+str(MASS)+".root"
+            SIG_FILE = "all_ExLep_M"+str(MASS)+".root"
             #makeDataCards(IN_FILE_DIR_ARRAY[CH], HIST_ARRAY[HIST][0],HIST_ARRAY[HIST][1], CHANNEL_ARRAY[CH], MASS, SIG_LABEL, SIG_FILE)
             makeDataCards(IN_FILE_DIR_ARRAY[CH], HIST_ARRAY[HIST][0],HIST_ARRAY[HIST][1]+str(MASS), CHANNEL_ARRAY[CH], MASS, SIG_LABEL, SIG_FILE)
     #store separate cards in an array

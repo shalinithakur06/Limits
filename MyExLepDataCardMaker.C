@@ -19,7 +19,7 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
         TString channelName="mu", 
         int mass = 250, 
         TString label="ExLep250", 
-        TString hPlusFileName="all_ExLepMuMuZ_M250.root")
+        TString hPlusFileName="all_ExLep_M250.root")
   {
   TString histSubDir = "Iso/"+histSubDir_+"/";
   bool isMuChannel = false; 
@@ -36,21 +36,13 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
   TH1F* hTTbar_JESDown = DC.readHisto(fTT, "JESMinus/", histSubDir, histName, sf_ttbar, "TTbar"); 
   TH1F* hTTbar_JERDown = DC.readHisto(fTT, "JERMinus/", histSubDir, histName, sf_ttbar, "TTbar"); 
   
-  //w+jets
-  double sf_wjet = 1;
-  TH1F* hWJet = DC.readHisto(fWJ, "base/", histSubDir, histName, sf_wjet, "WJets"); 
-  TH1F* hWJet_JESUp = DC.readHisto(fWJ, "JESPlus/", histSubDir, histName, sf_wjet, "WJets"); 
-  TH1F* hWJet_JERUp = DC.readHisto(fWJ, "JERPlus/", histSubDir, histName, sf_wjet, "WJets"); 
-  TH1F* hWJet_JESDown = DC.readHisto(fWJ, "JESMinus/", histSubDir, histName, sf_wjet, "WJets"); 
-  TH1F* hWJet_JERDown = DC.readHisto(fWJ, "JERMinus/", histSubDir, histName, sf_wjet, "WJets"); 
-  
   //Z+Jets
   double sf_dyjet = 1;
-  TH1F* hDYJet = DC.readHisto(fDY, "base/", histSubDir, histName, sf_wjet, "DYJets"); 
-  TH1F* hDYJet_JESUp = DC.readHisto(fDY, "JESPlus/", histSubDir, histName, sf_wjet, "DYJets"); 
-  TH1F* hDYJet_JERUp = DC.readHisto(fDY, "JERPlus/", histSubDir, histName, sf_wjet, "DYJets"); 
-  TH1F* hDYJet_JESDown = DC.readHisto(fDY, "JESMinus/", histSubDir, histName, sf_wjet, "DYJets"); 
-  TH1F* hDYJet_JERDown = DC.readHisto(fDY, "JERMinus/", histSubDir, histName, sf_wjet, "DYJets"); 
+  TH1F* hDYJet = DC.readHisto(fDY, "base/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_JESUp = DC.readHisto(fDY, "JESPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_JERUp = DC.readHisto(fDY, "JERPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_JESDown = DC.readHisto(fDY, "JESMinus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_JERDown = DC.readHisto(fDY, "JERMinus/", histSubDir, histName, sf_dyjet, "DYJets"); 
   
   //Dibosons
   double sf_vv = 1;
@@ -118,7 +110,6 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
         out << rate ;
 	out << space << hLstar->Integral()
             << space << hTTbar->Integral()
-            << space << hWJet->Integral()
             << space << hDYJet->Integral()
             << space << hVV->Integral()
             << endl;
@@ -129,10 +120,6 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
       } 
       else if(line.find("CMS_stat_tt")!=string::npos){  
 	line.replace( line.find("XXXX") , 4 , string(Form("%.2f", DC.getStatUnc(hTTbar,  0))));   
-        out << line << endl;
-      }  
-      else if(line.find("CMS_stat_wjet")!=string::npos){  
-        line.replace( line.find("XXXX") , 4 , string(Form("%.2f", DC.getStatUnc(hWJet,  0))));   
         out << line << endl;
       }  
       else if(line.find("CMS_stat_zjet")!=string::npos){ 
@@ -150,9 +137,6 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
         float JESUnc_ttbar = (hTTbar->Integral() > 0) ? DC.getSysUnc(hTTbar, hTTbar_JESUp, hTTbar_JESDown) : 1.00;
         line.replace( line.find("TTTT") , 4 , string(Form("%.3f", JESUnc_ttbar)) );
 
-        float JESUnc_wjet = (hWJet->Integral() > 0) ? DC.getSysUnc(hWJet, hWJet_JESUp, hWJet_JESDown) : 1.00;
-        line.replace( line.find("WWWW") , 4 , string(Form("%.3f", JESUnc_wjet)) );
-
         float JESUnc_zjet = (hDYJet->Integral() > 0) ? DC.getSysUnc(hDYJet, hDYJet_JESUp, hDYJet_JESDown) : 1.00;
         line.replace( line.find("DDDD") , 4 , string(Form("%.3f", JESUnc_zjet)) );
 
@@ -166,9 +150,6 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
 
         float JERUnc_ttbar = (hTTbar->Integral() > 0) ? DC.getSysUnc(hTTbar, hTTbar_JERUp, hTTbar_JERDown) : 1.00;
         line.replace( line.find("TTTT") , 4 , string(Form("%.3f", JERUnc_ttbar)) );
-
-        float JERUnc_wjet = (hWJet->Integral() > 0) ? DC.getSysUnc(hWJet, hWJet_JERUp, hWJet_JERDown) : 1.00;
-        line.replace( line.find("WWWW") , 4 , string(Form("%.3f", JERUnc_wjet)) );
 
         float JERUnc_zjet = (hDYJet->Integral() > 0) ? DC.getSysUnc(hDYJet, hDYJet_JERUp, hDYJet_JERDown) : 1.00;
         line.replace( line.find("DDDD") , 4 , string(Form("%.3f", JERUnc_zjet)) );

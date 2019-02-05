@@ -22,7 +22,7 @@ TFile* fWJ      = TFile::Open(inFileDir+"/all_WJets.root");
 TFile* fTT      = TFile::Open(inFileDir+"/all_TT.root");
 
 //signal
-TFile *fLstar250       = TFile::Open(inFileDir+"/all_ExLepMuMuZ_M250.root");
+TFile *fLstar250       = TFile::Open(inFileDir+"/all_ExLep_M250.root");
 
 class MyExLepDataCardMaker{
   public:
