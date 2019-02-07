@@ -78,20 +78,54 @@ void LimitPlotter(TString CHANNEL="mu",
       continue;
     }
     vector<double>sigXss;
-    sigXss.push_back(0.00427)    ;
-    sigXss.push_back(0.00291)    ;
-    sigXss.push_back(0.001761)   ;
-    sigXss.push_back(0.001177)   ;
-    sigXss.push_back(0.0007263)  ;
-    sigXss.push_back(0.0004267)  ;
-    sigXss.push_back(0.0002654)  ;
-    sigXss.push_back(0.0002021)  ;
-    sigXss.push_back(0.00006755) ;
-    sigXss.push_back(0.00002223) ;
-    sigXss.push_back(0.000008166);
-    sigXss.push_back(0.000003209);
-    sigXss.push_back(0.000001133);
-    sigXss.push_back(0.000000452);
+    if(CHANNEL=="mu"){
+      sigXss.push_back(0.00427)    ;
+      sigXss.push_back(0.00291)    ;
+      sigXss.push_back(0.001761)   ;
+      sigXss.push_back(0.001177)   ;
+      sigXss.push_back(0.0007263)  ;
+      sigXss.push_back(0.0004267)  ;
+      sigXss.push_back(0.0002654)  ;
+      sigXss.push_back(0.0002021)  ;
+      sigXss.push_back(0.00006755) ;
+      sigXss.push_back(0.00002223) ;
+      sigXss.push_back(0.000008166);
+      sigXss.push_back(0.000003209);
+      sigXss.push_back(0.000001133);
+      sigXss.push_back(0.000000452);
+    }
+    if(CHANNEL=="ele"){
+      sigXss.push_back(0.004407)  ;
+      sigXss.push_back(0.002916)  ;
+      sigXss.push_back(0.001607)  ;
+      sigXss.push_back(0.001079)  ;
+      sigXss.push_back(0.0007171) ;
+      sigXss.push_back(0.0004856) ;
+      sigXss.push_back(0.0002907) ;
+      sigXss.push_back(0.0001908) ;
+      sigXss.push_back(0.00005731);
+      sigXss.push_back(0.00002497);
+      sigXss.push_back(0.000009023);
+      sigXss.push_back(0.000003897);
+      sigXss.push_back(0.000001243);
+      sigXss.push_back(0.000000461);
+    }
+    if(CHANNEL=="mu_ele"){
+      sigXss.push_back(0.00427     + 0.004407)  ;
+      sigXss.push_back(0.00291     + 0.002916)  ;
+      sigXss.push_back(0.001761    + 0.001607)  ;
+      sigXss.push_back(0.001177    + 0.001079)  ;
+      sigXss.push_back(0.0007263   + 0.0007171) ;
+      sigXss.push_back(0.0004267   + 0.0004856) ;
+      sigXss.push_back(0.0002654   + 0.0002907) ;
+      sigXss.push_back(0.0002021   + 0.0001908) ;
+      sigXss.push_back(0.00006755  + 0.00005731);
+      sigXss.push_back(0.00002223  + 0.00002497);
+      sigXss.push_back(0.000008166 + 0.000009023);
+      sigXss.push_back(0.000003209 + 0.000003897);
+      sigXss.push_back(0.000001133 + 0.000001243);
+      sigXss.push_back(0.000000452 + 0.000000461);
+    }
 
     Double_t r;
     TTree* limit = (TTree*)f.Get("limit");
@@ -99,7 +133,7 @@ void LimitPlotter(TString CHANNEL="mu",
     for(int k = 0 ; k< limit->GetEntries() ; k++){
       limit->GetEntry(k);
       //multiply by xss
-      r = r*sigXss[i];
+      r = 1000*r*sigXss[i]; //1000 to convert xss into fb
       if(k==0) expY2sL[i] = r;
       if(k==1) expY1sL[i] = r;
       if(k==1) expY1sL_[i] = r;
@@ -194,12 +228,12 @@ void LimitPlotter(TString CHANNEL="mu",
   }
   
   //mg->GetYaxis()->CenterTitle();
-  mg->GetXaxis()->SetLimits(1,5500);
+  mg->GetXaxis()->SetLimits(0,5500);
   mg->GetYaxis()->SetTitleOffset(1.20);
   mg->GetYaxis()->SetNdivisions(6);
   mg->GetXaxis()->SetNdivisions(11);
   mg->GetXaxis()->SetTitleOffset(1.15);
-  mg->GetYaxis()->SetTitle("#sigma #times BR("+fullProcess+")");
+  mg->GetYaxis()->SetTitle("#sigma (fb) #times BR("+fullProcess+")");
   mg->GetYaxis()->SetTitleSize(0.06);   
   mg->GetXaxis()->SetTitleSize(0.05);
   mg->GetXaxis()->SetLabelSize(0.04);   
@@ -255,16 +289,10 @@ void LimitPlotter(TString CHANNEL="mu",
   ch->Draw("SAME");
   leg->Draw("SAME");
   
-
-  TF1 *line = new TF1("line","1",100,150);
-  line->SetLineColor(kRed);
-  line->SetLineWidth(2);
-
-  line->Draw("SAME");
   gPad->RedrawAxis();
   TString outFile = "output_"+CHANNEL;
   TString outDir = "output/"+CHANNEL;
-  gPad->SaveAs(outDir+"/"+outFile+".pdf");
+  gPad->SaveAs(outDir+"/"+outFile+".png");
   if(isOut){
     TFile *fout = new TFile(outDir+"/"+outFile+".root", "RECREATE");
     expected->Write("expected");
@@ -277,6 +305,6 @@ void LimitPlotter(TString CHANNEL="mu",
 
 void MyLimitPlotter(){
   LimitPlotter("mu",  false, true);
-  //LimitPlotter("ele", false, true );
-  //LimitPlotter("mu_ele", false, true );
+  LimitPlotter("ele", false, true );
+  LimitPlotter("mu_ele", false, true );
 }

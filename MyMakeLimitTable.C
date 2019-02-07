@@ -48,21 +48,55 @@ void makeLimitTable(TString CHANNEL,
       cout << "Cannot open file for " << string(CHANNEL.Data()) << " and mass " << X[i] << endl;
       continue;
     }
-    double xss = 1.0;
-         if(massFiles[i].Contains("250"))  xss = 0.00427    ;
-    else if(massFiles[i].Contains("500"))  xss = 0.00291    ;
-    else if(massFiles[i].Contains("750"))  xss = 0.001761   ;
-    else if(massFiles[i].Contains("1000")) xss = 0.001177   ;
-    else if(massFiles[i].Contains("1250")) xss = 0.0007263  ;
-    else if(massFiles[i].Contains("1500")) xss = 0.0004267  ;
-    else if(massFiles[i].Contains("1750")) xss = 0.0002654  ;
-    else if(massFiles[i].Contains("2000")) xss = 0.00002021 ;
-    else if(massFiles[i].Contains("2500")) xss = 0.00006755 ;
-    else if(massFiles[i].Contains("3000")) xss = 0.00002223 ;
-    else if(massFiles[i].Contains("3500")) xss = 0.000008166;
-    else if(massFiles[i].Contains("4000")) xss = 0.000003209;
-    else if(massFiles[i].Contains("4500")) xss = 0.000001133;
-    else if(massFiles[i].Contains("5000")) xss = 0.000000452;
+    vector<double>sigXss;
+    if(CHANNEL=="mu"){
+      sigXss.push_back(0.00427)    ;
+      sigXss.push_back(0.00291)    ;
+      sigXss.push_back(0.001761)   ;
+      sigXss.push_back(0.001177)   ;
+      sigXss.push_back(0.0007263)  ;
+      sigXss.push_back(0.0004267)  ;
+      sigXss.push_back(0.0002654)  ;
+      sigXss.push_back(0.0002021)  ;
+      sigXss.push_back(0.00006755) ;
+      sigXss.push_back(0.00002223) ;
+      sigXss.push_back(0.000008166);
+      sigXss.push_back(0.000003209);
+      sigXss.push_back(0.000001133);
+      sigXss.push_back(0.000000452);
+    }
+    if(CHANNEL=="ele"){
+      sigXss.push_back(0.004407)  ;
+      sigXss.push_back(0.002916)  ;
+      sigXss.push_back(0.001607)  ;
+      sigXss.push_back(0.001079)  ;
+      sigXss.push_back(0.0007171) ;
+      sigXss.push_back(0.0004856) ;
+      sigXss.push_back(0.0002907) ;
+      sigXss.push_back(0.0001908) ;
+      sigXss.push_back(0.00005731);
+      sigXss.push_back(0.00002497);
+      sigXss.push_back(0.000009023);
+      sigXss.push_back(0.000003897);
+      sigXss.push_back(0.000001243);
+      sigXss.push_back(0.000000461);
+    }
+    if(CHANNEL=="mu_ele"){
+      sigXss.push_back(0.00427     + 0.004407)  ;
+      sigXss.push_back(0.00291     + 0.002916)  ;
+      sigXss.push_back(0.001761    + 0.001607)  ;
+      sigXss.push_back(0.001177    + 0.001079)  ;
+      sigXss.push_back(0.0007263   + 0.0007171) ;
+      sigXss.push_back(0.0004267   + 0.0004856) ;
+      sigXss.push_back(0.0002654   + 0.0002907) ;
+      sigXss.push_back(0.0002021   + 0.0001908) ;
+      sigXss.push_back(0.00006755  + 0.00005731);
+      sigXss.push_back(0.00002223  + 0.00002497);
+      sigXss.push_back(0.000008166 + 0.000009023);
+      sigXss.push_back(0.000003209 + 0.000003897);
+      sigXss.push_back(0.000001133 + 0.000001243);
+      sigXss.push_back(0.000000452 + 0.000000461);
+    }
 
     Double_t r;
     TTree* limit = (TTree*)f.Get("limit");
@@ -71,7 +105,7 @@ void makeLimitTable(TString CHANNEL,
     for(int k = 0 ; k< limit->GetEntries() ; k++){
       limit->GetEntry(k);
       //multiply by xss
-      r = r*xss;
+      r = 1000*r*sigXss[i];
       if(k==0) expY2sL[i] = r;
       if(k==1) expY1sL[i] = r;
       if(k==1) expY1sL_[i] = r;
@@ -92,7 +126,7 @@ void makeLimitTable(TString CHANNEL,
   outFile<<"\\begin{tabular}{ |l|l|l|l|l|l|}"<<endl; 
   outFile<<"\\hline "<<endl;
   outFile<<"$M_{l^*}$"<<" & "<< "-2$\\sigma$ & -1$\\sigma$ & median & +1$\\sigma$ & +1$\\sigma$\\\\ "<<endl;
-  outFile<<"(GeV) & "<< "(\\%) & "<< "(\\%) & "<< "(\\%) & "<<"(\\%) & "<<"(\\%) "<<" \\\\ "<<endl;
+  outFile<<"(GeV) & "<< "(fb) & "<< "(fb) & "<< "(fb) & "<<"(fb) & "<<"(fb) "<<" \\\\ "<<endl;
   outFile<<"\\hline "<<endl;
   for(int i1 = 0 ; i1 < nMassPoints ; i1++){
   cout<<X[i1]<<setw(15)<<expY[i1]<<setw(15)<<expY2sL[i1]<<setw(15)<< expY1sL[i1]<<setw(15)<<expY1sH[i1]<<setw(15)<<expY2sH[i1]<<endl; 
@@ -128,7 +162,7 @@ void MyMakeLimitTable(){
   //muon 
   makeLimitTable("mu",  false, true, outFile);
   //electron 
-  makeLimitTable("ele", false, true, outFile);
+  //makeLimitTable("ele", false, true, outFile);
   //lepton 
   //makeLimitTable("mu_ele", false, true, outFile);
   outFile<<"\\end{document}"<<endl;  

@@ -32,25 +32,31 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
   double sf_ttbar = 1; 
   TH1F* hTTbar = DC.readHisto(fTT, "base/", histSubDir, histName, sf_ttbar, "TTbar"); 
   TH1F* hTTbar_JESUp = DC.readHisto(fTT, "JESPlus/", histSubDir, histName, sf_ttbar, "TTbar");
-  TH1F* hTTbar_JERUp = DC.readHisto(fTT, "JERPlus/", histSubDir, histName, sf_ttbar, "TTbar"); 
   TH1F* hTTbar_JESDown = DC.readHisto(fTT, "JESMinus/", histSubDir, histName, sf_ttbar, "TTbar"); 
+  TH1F* hTTbar_JERUp = DC.readHisto(fTT, "JERPlus/", histSubDir, histName, sf_ttbar, "TTbar"); 
   TH1F* hTTbar_JERDown = DC.readHisto(fTT, "JERMinus/", histSubDir, histName, sf_ttbar, "TTbar"); 
+  TH1F* hTTbar_bTagUp = DC.readHisto(fTT, "bTagPlus/", histSubDir, histName, sf_ttbar, "TTbar");
+  TH1F* hTTbar_bTagDown = DC.readHisto(fTT, "bTagMinus/", histSubDir, histName, sf_ttbar, "TTbar"); 
   
   //Z+Jets
   double sf_dyjet = 1;
   TH1F* hDYJet = DC.readHisto(fDY, "base/", histSubDir, histName, sf_dyjet, "DYJets"); 
   TH1F* hDYJet_JESUp = DC.readHisto(fDY, "JESPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
-  TH1F* hDYJet_JERUp = DC.readHisto(fDY, "JERPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
   TH1F* hDYJet_JESDown = DC.readHisto(fDY, "JESMinus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_JERUp = DC.readHisto(fDY, "JERPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
   TH1F* hDYJet_JERDown = DC.readHisto(fDY, "JERMinus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_bTagUp = DC.readHisto(fDY, "bTagPlus/", histSubDir, histName, sf_dyjet, "DYJets"); 
+  TH1F* hDYJet_bTagDown = DC.readHisto(fDY, "bTagMinus/", histSubDir, histName, sf_dyjet, "DYJets"); 
   
   //Dibosons
   double sf_vv = 1;
   TH1F* hVV = DC.readHisto(fVV, "base/", histSubDir, histName, sf_vv, "VV"); 
   TH1F* hVV_JESUp = DC.readHisto(fVV, "JESPlus/", histSubDir, histName, sf_vv, "VV"); 
-  TH1F* hVV_JERUp = DC.readHisto(fVV, "JERPlus/", histSubDir, histName, sf_vv, "VV"); 
   TH1F* hVV_JESDown = DC.readHisto(fVV, "JESMinus/", histSubDir, histName, sf_vv, "VV"); 
+  TH1F* hVV_JERUp = DC.readHisto(fVV, "JERPlus/", histSubDir, histName, sf_vv, "VV"); 
   TH1F* hVV_JERDown = DC.readHisto(fVV, "JERMinus/", histSubDir, histName, sf_vv, "VV"); 
+  TH1F* hVV_bTagUp = DC.readHisto(fVV, "bTagPlus/", histSubDir, histName, sf_vv, "VV"); 
+  TH1F* hVV_bTagDown = DC.readHisto(fVV, "bTagMinus/", histSubDir, histName, sf_vv, "VV"); 
   //Data
   double sf_data = 1; //should be 1, always
   TH1F* hData = DC.readHisto(fData, "base/", histSubDir, histName, sf_data, "Data"); 
@@ -60,9 +66,11 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
   double sf_lstar = 1; 
   TH1F* hLstar = DC.readHisto(fLstar, "base/", histSubDir, histName, sf_lstar, "Signal"); 
   TH1F* hLstar_JESUp = DC.readHisto(fLstar, "JESPlus/", histSubDir, histName, sf_lstar, "Signal"); 
-  TH1F* hLstar_JERUp = DC.readHisto(fLstar, "JERPlus/", histSubDir, histName, sf_lstar, "Signal"); 
   TH1F* hLstar_JESDown = DC.readHisto(fLstar, "JESMinus/", histSubDir, histName, sf_lstar, "Signal"); 
+  TH1F* hLstar_JERUp = DC.readHisto(fLstar, "JERPlus/", histSubDir, histName, sf_lstar, "Signal"); 
   TH1F* hLstar_JERDown = DC.readHisto(fLstar, "JERMinus/", histSubDir, histName, sf_lstar, "Signal"); 
+  TH1F* hLstar_bTagUp = DC.readHisto(fLstar, "bTagPlus/", histSubDir, histName, sf_lstar, "Signal"); 
+  TH1F* hLstar_bTagDown = DC.readHisto(fLstar, "bTagMinus/", histSubDir, histName, sf_lstar, "Signal"); 
 
   //open input template data card
   ifstream in;
@@ -156,6 +164,20 @@ void MyExLepDataCardMaker(TString inFileDir="stack_for2016Data_20190117_Mu",
 
         float JERUnc_vv = (hVV->Integral() > 0) ? DC.getSysUnc(hVV, hVV_JERUp, hVV_JERDown) : 1.00;
         line.replace( line.find("VVVV") , 4 , string(Form("%.3f", JERUnc_vv)) );
+        out << line << endl;
+      }
+     else if(line.find("CMS_eff_b")!=string::npos){
+        float bTagUnc_hLstar = (hLstar->Integral() > 0) ? DC.getSysUnc(hLstar, hLstar_bTagUp, hLstar_bTagDown) : 1.00;
+        line.replace( line.find("LLLL") , 4 , string(Form("%.3f", bTagUnc_hLstar)) );
+
+        float bTagUnc_ttbar = (hTTbar->Integral() > 0) ? DC.getSysUnc(hTTbar, hTTbar_bTagUp, hTTbar_bTagDown) : 1.00;
+        line.replace( line.find("TTTT") , 4 , string(Form("%.3f", bTagUnc_ttbar)) );
+
+        float bTagUnc_zjet = (hDYJet->Integral() > 0) ? DC.getSysUnc(hDYJet, hDYJet_bTagUp, hDYJet_bTagDown) : 1.00;
+        line.replace( line.find("DDDD") , 4 , string(Form("%.3f", bTagUnc_zjet)) );
+
+        float bTagUnc_vv = (hVV->Integral() > 0) ? DC.getSysUnc(hVV, hVV_bTagUp, hVV_bTagDown) : 1.00;
+        line.replace( line.find("VVVV") , 4 , string(Form("%.3f", bTagUnc_vv)) );
         out << line << endl;
       }
       else{ //default without changes
